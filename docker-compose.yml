@@ -1,10 +1,8 @@
 version: '3.7'
 
 services:
-
   nginx:
     image: nginx:latest
-    container_name: nginx
     ports:
       - 80:80
       - 443:443
@@ -13,22 +11,20 @@ services:
       - ./docker/nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./:/var/www/
     links:
-      - php
+      - php-fpm
 
-  php:
+  php-fpm:
     build: ./docker/php
-    container_name: php
     volumes:
       - ./:/var/www/
+    environment:
+      - "DB_PORT=3306"
+      - "DB_HOST=mysql"
     links:
       - mysql
-    networks:
-      internal:
-        ipv4_address: 172.25.0.12
 
   php-cli:
     build: ./docker/php
-    container_name: php-cli
     volumes:
       - ./:/var/www/
     links:
@@ -37,12 +33,11 @@ services:
 
   mysql:
     image: mariadb
-    container_name: mariadb
     tty: true
     volumes:
       - ./storage/docker/mysql:/var/lib/mysql
     ports:
-      - '3306:3306'
+      - '33061:3306'
     environment:
       TZ: 'Europe/Moscow'
       MYSQL_ROOT_PASSWORD: '123'

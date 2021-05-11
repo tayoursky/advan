@@ -33,6 +33,7 @@ phpunit.phar
 
 # vagrant runtime
 /.vagrant
+/storage
 /vagrant
 
 # ignore generated files
